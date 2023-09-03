@@ -6,12 +6,17 @@ import androidx.multidex.MultiDex;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 
+
 public class MyApplication extends Application {
 
     @Override
     public void onCreate() {
         super.onCreate();
         MultiDex.install(this);
+        if (BuildConfig.DEBUG) {
+            ARouter.openLog();     // Print log
+            ARouter.openDebug();
+        }
         ARouter.init(this);
     }
 }

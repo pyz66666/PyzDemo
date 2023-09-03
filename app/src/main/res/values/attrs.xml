@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="HandWriteView">
+        <!--声明HandWriteView所需要的系统自定义属性-->
+        <attr name="paintColor" format="color"/>
+    </declare-styleable>
+
+</resources>

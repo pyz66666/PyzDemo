@@ -1,7 +1,10 @@
 package com.pyz.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import com.alibaba.android.arouter.launcher.ARouter;
+import com.blankj.utilcode.util.ToastUtils;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +17,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.pyz.myapplication.databinding.ActivityMainBinding;
+import com.pyz.myapplication.utils.ARouterConstant;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
         binding.fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show());
         binding.btnHandWrite.setOnClickListener(view -> {
+            ToastUtils.showShort("1111");
+//            Intent intent = new Intent(this,HandWriteActivity.class);
+//            startActivity(intent);
+            ARouter.getInstance().build(ARouterConstant.HandWriteActivity).navigation();
         });
 
 
