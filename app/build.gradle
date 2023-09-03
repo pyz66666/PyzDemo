@@ -52,4 +52,7 @@ dependencies {
     //aRouter跳转
     implementation 'com.alibaba:arouter-api:1.5.2'
     annotationProcessor 'com.alibaba:arouter-compiler:1.5.2'
+    //RxPremission
+    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.4'
 }

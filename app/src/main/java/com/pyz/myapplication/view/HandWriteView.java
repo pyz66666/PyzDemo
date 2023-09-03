@@ -2,10 +2,14 @@ package com.pyz.myapplication.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Xfermode;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,6 +27,9 @@ public class HandWriteView extends View {
     private Path path;
     private float x ;
     private float y ;
+    private boolean mUseEraser = false;
+    private Bitmap mBufferBitmap;//缓存的bitmap
+    private Canvas mBufferCanvas;//缓存的Canvas
 
 
     public HandWriteView(Context context) {
@@ -47,6 +54,7 @@ public class HandWriteView extends View {
         mPaint.setStrokeWidth(strokeWidth);
         mPaint.setAntiAlias(true);//抗锯齿
         mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setXfermode(null);
     }
 
     /**
@@ -56,7 +64,7 @@ public class HandWriteView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawPath(path,mPaint);
+        canvas.drawBitmap(mBufferBitmap,0,0,null);
     }
 
     /**
@@ -67,6 +75,8 @@ public class HandWriteView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        mBufferBitmap = Bitmap.createBitmap(getMeasuredWidth(),getMeasuredHeight(),Bitmap.Config.ARGB_8888);
+        mBufferCanvas = new Canvas(mBufferBitmap);
     }
 
     /**
@@ -84,6 +94,8 @@ public class HandWriteView extends View {
                 touchMove(event);
                 break;
             case MotionEvent.ACTION_UP:
+                //画完一条之后清空路径
+                path.reset();
                 break;
 
         }
@@ -96,7 +108,6 @@ public class HandWriteView extends View {
      * @param event
      */
     private void touchDown(MotionEvent event) {
-        //path.reset();
         float downX = event.getX();
         float downY = event.getY();
         x = downX;
@@ -122,13 +133,32 @@ public class HandWriteView extends View {
             x = moveX;
             y = moveY;
         }
+        mBufferCanvas.drawPath(path,mPaint);
     }
 
+    /**
+     * 清除线
+     */
     public void cleanPath(){
-        if(path!=null){
-            path.reset();
-            invalidate();
+        mBufferCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
+        invalidate();
+    }
+
+    /**
+     * 设置画笔模式
+     * @param useEraser
+     */
+    public void changeEraser(boolean useEraser){
+        mUseEraser = useEraser;
+        if(useEraser){
+            //切换橡皮檫模式
+            mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+        }else {
+            mPaint.setXfermode(null);
         }
     }
 
+    public Bitmap getMBufferBitmap(){
+        return mBufferBitmap;
+    }
 }
